@@ -1,55 +1,47 @@
 import sys, re, os
+from message import messages
 
 #Global mode and directory/file path
 mode = sys.argv[1]
 path = sys.argv[2]
 
 class Minify:
+
 	def __init__(self):
-		print "Minification started!"
+		print messages["start"]
 
 	def mode(self, mode, path):
 		if mode == 'd':
-			self.minify_directory(path)
+			self.directory(path)
 		elif mode == 'f':
-			self.minify_file(path)
+			self.file(path)
 		else:
-			return self.error("Incorrect mode param! Please use 'd' for directory minification or 'f' for single file minification.")
-		return
+			self.error(messages["error_mode"])
 
-	def minify_directory(self, directory):	
-		#Read in files within directory and remove line breaks and tabs
+	def directory(self, directory):
 		if os.path.isdir(directory):
 			for f in os.listdir(directory):
 				file = directory + '/' + f
-				with open(file, 'r+') as i:
-					lines = i.read()
-					lines = re.sub("\n", "", lines)
-					lines = re.sub("	", "", lines)
-					i.seek(0)
-					i.write(lines)
-					i.truncate()
-				i.closed
+				self.minify(file, file + ' ' + messages["file_directory"])
 		else:
-			return self.error('Not a directory! Please enter directory path.')
-		
-		print 'File directory minification complete!'
+			self.error(messages['error_directory'])
 
-	def minify_file(self, file):
-		#Read in file and remove line breaks and tabs
+	def file(self, file):
 		if os.path.isfile(file):
-			with open(file, 'r+') as i:
-				lines = i.read()
-				lines = re.sub("\n", "", lines)
-				lines = re.sub("	", "", lines)
-				i.seek(0)
-				i.write(lines)
-				i.truncate()
-			i.closed
+			self.minify(file, file + ' ' + messages["file_complete"])
 		else:
-			return self.error('Not a file! Please enter a file path.')
-		
-		print 'File minification complete!'
+			self.error(messages['error_file'])
+
+	def minify(self, path, message):
+		with open(path, 'r+') as i:
+			lines = i.read()
+			lines = re.sub("\n", "", lines)
+			lines = re.sub("	", "", lines)
+			i.seek(0)
+			i.write(lines)
+			i.truncate()
+		i.closed
+		print message
 
 	def error(self, err):
 		#Print error message
