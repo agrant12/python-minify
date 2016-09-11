@@ -1,4 +1,4 @@
-Frontend Minifification
+HTML, CSS, JS Minification
 ==============
 
 Python class/program that minifies html, js, and css files for faster front end application performance. Program is able to either minify a single file or a group of files within a directory.
